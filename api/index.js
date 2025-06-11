@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
 import puppeteer from 'puppeteer';
+import fetch from 'node-fetch';
 
 // ES module equivalent of __dirname
 const url = import.meta.url;
@@ -19,9 +20,6 @@ if (process.env.NODE_ENV === 'production') {
 
 // Enable CORS for all routes
 app.use(cors());
-
-// app.get("/", (req, res) => res.send("Express on Vercel"));
-
 
 app.get('/api/spotify/track/:trackId', async (req, res) => {
   const { trackId } = req.params;
@@ -165,6 +163,38 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
   }
 });
 
+app.get('/api/spotify/token', async (req, res) => {
+  const CLIENT_ID = process.env.VITE_SPOTIFY_CLIENT_ID;
+  const CLIENT_SECRET = process.env.VITE_SPOTIFY_CLIENT_SECRET;
+  const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
+
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    return res.status(500).json({ error: 'Spotify credentials not set on server' });
+  }
+
+  try {
+    const response = await fetch(SPOTIFY_TOKEN_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': 'Basic ' + Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64'),
+      },
+      body: new URLSearchParams({
+        grant_type: 'client_credentials',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(500).json({ error: data.error || 'Failed to get access token' });
+    }
+
+    res.json({ access_token: data.access_token });
+  } catch (error) {
+    res.status(500).json({ error: 'Error getting access token', details: error.message });
+  }
+});
 
 // Default route to serve the React app in production
 if (process.env.NODE_ENV === 'production') {

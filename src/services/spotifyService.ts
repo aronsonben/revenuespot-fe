@@ -1,9 +1,9 @@
 import { SpotifyTrack, SpotifyError } from '../types/spotify';
 
 // Spotify client credentials from environment variables
-const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
-const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
+// const CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID;
+// const CLIENT_SECRET = import.meta.env.VITE_SPOTIFY_CLIENT_SECRET;
+// const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
 
 // Helper to get track ID from Spotify URI
@@ -31,7 +31,9 @@ const getTrackIdFromInput = (input: string): string | null => {
   return null;
 };
 
-// Get access token using Client Credentials flow
+// [DEPRECATED] Get access token using Client Credentials flow
+// Deprecated to only fetch access tokens in backend
+/* 
 const getAccessToken = async (): Promise<string> => {
   if (!CLIENT_ID || !CLIENT_SECRET) {
     throw new Error('Spotify API credentials not found in environment variables');
@@ -49,6 +51,23 @@ const getAccessToken = async (): Promise<string> => {
       }),
     });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Failed to get access token');
+    }
+
+    return data.access_token;
+  } catch (error) {
+    console.error('Error getting access token:', error);
+    throw error;
+  }
+};
+*/ 
+
+const getAccessToken = async (): Promise<string> => {
+  try {
+    const response = await fetch('/api/spotify/token');
     const data = await response.json();
 
     if (!response.ok) {
