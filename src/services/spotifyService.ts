@@ -68,7 +68,7 @@ const getAccessToken = async (): Promise<string> => {
 const getAccessToken = async (): Promise<string> => {
   try {
     const response = await fetch('/api/spotify/token');
-    const data = await response.json();
+    const data = await response.json() as { access_token: string; error?: string };
 
     if (!response.ok) {
       throw new Error(data.error || 'Failed to get access token');
