@@ -164,8 +164,8 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
 });
 
 app.get('/api/spotify/token', async (req, res) => {
-  const CLIENT_ID = process.env.VITE_SPOTIFY_CLIENT_ID;
-  const CLIENT_SECRET = process.env.VITE_SPOTIFY_CLIENT_SECRET;
+  const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
+  const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
   const SPOTIFY_TOKEN_ENDPOINT = 'https://accounts.spotify.com/api/token';
 
   if (!CLIENT_ID || !CLIENT_SECRET) {
@@ -182,6 +182,9 @@ app.get('/api/spotify/token', async (req, res) => {
       body: new URLSearchParams({
         grant_type: 'client_credentials',
       }),
+    }).catch(error => {
+      console.error('Error fetching Spotify token:', error.message);
+      throw new Error('Failed to fetch Spotify token');
     });
 
     const data = await response.json();
@@ -202,10 +205,6 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
 } 
-
-// app.listen(PORT, () => {
-//   console.log(`Server running on port ${PORT}`);
-// });
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
