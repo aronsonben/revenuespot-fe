@@ -6,6 +6,12 @@ import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium-min';
 import fetch from 'node-fetch';
 
+// Only import full puppeteer if local
+let puppeteerFull = null;
+if (process.env.NODE_ENV !== 'production') {
+  puppeteerFull = await import('puppeteer');
+}
+
 const url = import.meta.url;
 const __filename = fileURLToPath(url);
 const __dirname = path.dirname(__filename);
@@ -33,17 +39,24 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
   
   console.log("Launching headless.. ");
   try {
-    // Launch headless browser
-    browser = await puppeteer.launch({
-      headless: true, // Use new headless mode
-      args: chromium.args,
-      executablePath: await chromium.executablePath(chromiumPack),
-    });
-    // browser = await puppeteer.launch({
-    //   headless: 'new', // Use new headless mode
-    //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    //   executablePath: await chromium.executablePath(chromiumPack),
-    // });
+    const IS_LOCAL = process.env.NODE_ENV !== 'production';
+    const headlessType = IS_LOCAL ? 'new' : true;
+    
+    if (IS_LOCAL) {
+      browser = await puppeteerFull.launch({
+        headless: 'new', // Use new headless mode
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
+    } else {
+      // Launch headless browser
+      browser = await puppeteer.launch({
+        headless: headlessType, // Use new headless mode
+        args: chromium.args,
+        executablePath: IS_LOCAL 
+          ? "tmp/localChromium/chromium/mac_arm-1473127/chrome-mac/Chromium.app/Contents/MacOS/Chromium"
+          : await chromium.executablePath(chromiumPack),
+      });
+    }
     
     // Open new page
     const page = await browser.newPage();
