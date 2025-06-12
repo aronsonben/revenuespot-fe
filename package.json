@@ -14,11 +14,12 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.4",
     "@mui/material": "^5.17.1",
+    "@sparticuz/chromium-min": "^133.0.0",
     "axios": "^1.8.4",
     "cors": "^2.8.5",
     "express": "4.21.2",
     "node-fetch": "^3.3.2",
-    "puppeteer": "^24.10.0",
+    "puppeteer-core": "24.7.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

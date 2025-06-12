@@ -2,13 +2,15 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium-min';
 import fetch from 'node-fetch';
 
-// ES module equivalent of __dirname
 const url = import.meta.url;
 const __filename = fileURLToPath(url);
 const __dirname = path.dirname(__filename);
+// Use Sparticuz's Chromium-min package for Puppeteer to reduce bundle size
+const chromiumPack = "https://github.com/Sparticuz/chromium/releases/download/v135.0.0-next.3/chromium-v135.0.0-next.3-pack.x64.tar";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -33,12 +35,20 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
   try {
     // Launch headless browser
     browser = await puppeteer.launch({
-      headless: 'new', // Use new headless mode
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      headless: true, // Use new headless mode
+      args: chromium.args,
+      executablePath: await chromium.executablePath(chromiumPack),
     });
+    // browser = await puppeteer.launch({
+    //   headless: 'new', // Use new headless mode
+    //   args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    //   executablePath: await chromium.executablePath(chromiumPack),
+    // });
     
     // Open new page
     const page = await browser.newPage();
+
+    console.log("Browser launched successfully.");
     
     // Set viewport size
     await page.setViewport({ width: 1280, height: 800 });
@@ -51,6 +61,8 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
     
     // Navigate to the Spotify page
     await page.goto(spotifyWebUrl, { waitUntil: 'networkidle2' });
+    
+    console.log(`Navigated to ${spotifyWebUrl}`);
     
     // Wait for content to load - this selector should be something that appears when the page is fully loaded
     await page.waitForSelector('body', { visible: true });
@@ -154,6 +166,7 @@ app.get('/api/spotify/track/:trackId', async (req, res) => {
     res.json(responseData);
   } catch (error) {
     console.error('Error fetching Spotify play count:', error.message);
+    console.error('Stack trace:', error.stack);
     res.status(500).json({ error: 'Failed to fetch Spotify data', details: error.message });
   } finally {
     // Make sure to close the browser
