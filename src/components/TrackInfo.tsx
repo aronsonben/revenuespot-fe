@@ -81,50 +81,50 @@ const TrackInfo = ({ track, loading, error }: TrackInfoProps) => {
     : 'Not available';
 
   return (
-    <Card elevation={3}>
-      <CardContent sx={{ p: 6 }}>
-        <Grid container spacing={4}>
+    <Card id="track-info-root" elevation={3} sx={{ my: 2, width: '100%', mx: 'auto' }}>
+      <CardContent sx={{ p: 4 }}>
+        <Grid container columnSpacing={4} rowSpacing={2}>
           {/* Album Cover */}
           <Grid item xs={12} md={4} sx={{ display: "flex", flexDirection: "column",alignItems: "center", justifyContent: "center" }} >
             {track.album.images && track.album.images.length > 0 && (
               <img 
                 src={track.album.images[0].url} 
                 alt={`${track.album.name} cover`} 
-                className="max-w-1/2 w-1/2 rounded-md shadow-md"
+                style={{ maxHeight: '200px', objectFit: 'cover', borderRadius: '8px' }}
               />
             )}
           </Grid>
 
           {/* Track Information */}
-          <Grid item xs={12} md={8}>
-            <Typography variant="h4" component="h2" className="font-bold text-gray-800">
+          <Grid item xs={12} md={8} style={{ display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center"}}>
+            <Typography variant="h4" component="h4" className="font-bold text-gray-800">
               {track.name}
             </Typography>
             
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Artists:</span> {' '}
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Artists:</span> {' '}
                 {track.artists.map(artist => artist.name).join(', ')}
               </Typography>
               
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Album:</span> {' '}
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Album:</span> {' '}
                 {track.album.name}
               </Typography>
               
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Release Date:</span> {' '}
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Release Date:</span> {' '}
                 {track.album.release_date}
               </Typography>
               
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Duration:</span> {' '}
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Duration:</span> {' '}
                 {formattedDuration}
               </Typography>
               
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2}} >
-                <Typography variant="body1" className="text-gray-700">
-                  <span className="font-semibold">Popularity:</span> {' '}
+                <Typography variant="body2" className="text-gray-700">
+                  <span style={{ fontWeight: "bold" }}>Popularity:</span> {' '}
                   {track.popularity}/100
                 </Typography>
                 
@@ -134,6 +134,7 @@ const TrackInfo = ({ track, loading, error }: TrackInfoProps) => {
                     value={track.popularity} 
                     size={24} 
                     thickness={4} 
+                    sx={{ color: '#1a90ff' }}
                   />
                   <Box
                     sx={{
@@ -155,8 +156,8 @@ const TrackInfo = ({ track, loading, error }: TrackInfoProps) => {
               </Box>
               
               {/* Play Count - New Addition */}
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Play Count:</span> {' '}
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Play Count:</span> {' '}
                 {playCountLoading ? (
                   <CircularProgress size={16} thickness={4} />
                 ) : (
@@ -165,8 +166,8 @@ const TrackInfo = ({ track, loading, error }: TrackInfoProps) => {
               </Typography>
               
               {/* Estimated Revenue - New Addition */}
-              <Typography variant="body1" className="text-gray-700">
-                <span className="font-semibold">Estimated Revenue:</span> {' '}
+              <Typography variant="body2" className="text-gray-700">
+                <span style={{ fontWeight: "bold" }}>Estimated Revenue:</span> {' '}
                 {playCountLoading ? (
                   <CircularProgress size={16} thickness={4} />
                 ) : (
@@ -197,7 +198,7 @@ const TrackInfo = ({ track, loading, error }: TrackInfoProps) => {
             
             <Box className="mt-2">
               <Typography variant="caption" color="text.secondary">
-                <span className="font-semibold">Track URI:</span> {track.uri}
+                <span style={{ fontWeight: "bold" }}>Track URI:</span> {track.uri}
               </Typography>
             </Box>
           </Grid>
