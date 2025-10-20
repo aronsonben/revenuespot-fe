@@ -99,6 +99,10 @@ function App() {
   return (
     <>
       <NavBar />
+      <div id="sunset-notification" style={{ display: "flex", justifyContent: "center", alignItems: "center", maxWidth: "50vw", backgroundColor: "#fffae6", padding: "1rem", borderBottom: "1px solid #ccc" }}>
+        <p><b>DEV NOTE:</b> hello! I have shut down this Spotify Revenue Estimator for cost-saving purposes. 
+        You can read more about the project <a href="https://concourse.codes/projects/revenuespot.html" target="_blank" style={{ textDecoration: 'underline' }}>here.</a></p>
+      </div>
       <div className="flex flex-column justify-start h-full py-8 px-4" style={{ padding: "2rem" }}>
         <Container maxWidth="xl" sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
           <Box sx={{ textAlign: 'center', mb: 4, width: "100%"}}>
